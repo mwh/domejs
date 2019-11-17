@@ -8,10 +8,18 @@ $ = new Proxy(function() {}, {
         let id
         if (hashM)
             id = hashM[1]
-        let elName = expr.match(/^[^.#]+/)
+        let elName = expr.match(/^[^.#[]+/)
         let el = document.createElement(elName)
-        for (let c of expr.matchAll(/\.([^.#]+)/g))
+        for (let c of expr.matchAll(/\.([^.#[]+)/g))
             el.classList.add(c[1]);
+        for (let c of expr.matchAll(/\[([^\]=]+)(=([^\]]+))?\]/g)) {
+            if (c[3] && c[3][0] != '"')
+                el[c[1]] = c[3]
+            else if (c[3])
+                el[c[1]] = c[3].substring(1, c[3].length - 1)
+            else
+                el[c[1]] = c[1]
+        }
         for (let i = 1; i < argumentsList.length; i++) {
             let a = argumentsList[i]
             if (typeof a == 'string')
