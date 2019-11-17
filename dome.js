@@ -49,9 +49,22 @@ $.wrap = function(r) {
             r.forEach(x => f(x))
             return this
         },
-                set value(v) {
-                    r.forEach(x => x.value = v);
+        get each() {
+            return new Proxy({}, {
+                get: function(target, property, receiver) {
+                    return function() {
+                        return Array.prototype.map.call(r,
+                            x => x[property].apply(x, arguments))
+                    }
                 },
+                set: function(obj, prop, value) {
+                    r.forEach(x => x[prop] = value)
+                },
+            })
+        },
+        set value(v) {
+            r.forEach(x => x.value = v);
+        },
         get style() {
             return new Proxy({}, {
                 set(target, prop, value) {
