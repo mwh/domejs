@@ -31,7 +31,7 @@ Children can be provided as extra arguments:
 Multiple children are appended left to right. String arguments
 are inserted as text nodes.
 
-# Manipulating elements
+# Manipulating elements and accessing properties
 
 Existing elements can be found with `$('#sidebar > h1 + p')`
 and then manipulated all at once as though they were single
@@ -41,14 +41,51 @@ elements, using the standard DOM functions and properties:
     $('input.important').remove()
     $('img + caption').parentNode.addEventListener('click', f)
     $('input[type=text]').value = ''
-Calling functions, retrieving property values, and setting new
-values are all supported, and can be nested many steps deep.
+    $('a:nth-of-type(2n)').firstChild.classList.toggle('quiet')
+Calling functions, retrieving property values, and assigning
+new values are all supported. Assigning a value sets the
+property on all matched elements to the new value at once.
+
+Method return values and fetched property values are collected
+together and proxied in the same way, so methods and property
+accesses can be chained many layers deep. Methods are called
+immediately, while properties are not read until used (by
+iteration or method call).
+
+Undefined values are silently removed and not dereferenced, so
+no error is produced by accessing a property that only exists
+on some items even if other properties are accessed through it.
+
+## Computed property updates
+
+The special `update` method allows computing new values of a
+property using the current state:
+
+    $('input[type=number]').value.update(x => x / 2)
+    $('input.q').value.update((cur, el) => cur + el.dataset.p)
+    $('div').style.width.update(x=>Number.parseInt(x)*2 + 'px')
+Any property can be accessed on the left, and then `.update(f)`
+will use `f` to compute a new value for that property on each
+item separately.
+
+The provided function is given two arguments: the current value
+of the property, and the nearest element parent. For example,
+in `$('li').style.color.update((cur, el)=>'')` the value of
+`cur` will be the current `color`, while `el` will hold the
+corresponding `li` element.
+
+# Iteration
 
 Selected nodes or properties can also be iterated over:
 
     for (let e of $('li')) { e.textContent = e.dataset.label; }
     for (let v of $('input.names').value) console.log(v)
     Array.from($('input.names').value)
+The iterated values are not proxied and can be used as their
+true underlying selves. To get a real array of the selected
+items to use elsewhere, use `Array.from`.
+
+# Other methods
 
 A few additional methods augment those available on the
 nodes themselves. `forEach`, `map`, and `filter` have the usual
@@ -57,12 +94,6 @@ collection behaviour:
     $('li').forEach(x => alert(x.textContent))
     $('img').map(x => {url: x.src, width: x.width })
     $('input[type=number]').filter(x => x.value * 10 < 100)
-
-The `update` method allows computed updates of properties:
-
-    $('input[type=number]').value.update(x => x / 2)
-    $('input.q').value.update((cur, el) => cur + el.dataset.p)
-    $('div').style.width.update(x=>Number.parseInt(x)*2 + 'px')
 
 `on` and `off` allow attaching event listeners to the elements,
 and have multiple ways of interacting:
