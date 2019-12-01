@@ -1,7 +1,7 @@
 // domejs - minimal DOM helpers
 // Copyright © 2019 Michael Homer
 // Distributed under the terms of the MIT License
-$ = new Proxy(function() {}, {
+export let $ = new Proxy(function() {}, {
     construct(target, argumentsList, newTarget) {
         let expr = argumentsList[0]
         let hashM = expr.match(/#([^.]+)/)
@@ -69,6 +69,7 @@ $.wrap = function(r) {
             return new Proxy({}, {
                 set(target, prop, value) {
                     r.forEach(x => x.style[prop] = value)
+                    return true;
                 }
             })
         },
