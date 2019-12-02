@@ -132,7 +132,7 @@ const baseMethods = {
         let key = path[path.length - 1]
         for (let oe of receivers)
             oe.value[key] = func(oe.value[key], oe.elementAncestor)
-        return wrap(receivers)
+        return wrap(receivers.map(x => x.value))
     },
     forEach(iterable, path, func) {
         let obs = navigate(iterable, path)
