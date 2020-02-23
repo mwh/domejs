@@ -42,6 +42,12 @@ const dome = new Proxy(function() {}, {
         return el
     },
     apply(target, thisArg, argumentsList) {
+        if (argumentsList[0] instanceof Node)
+            return wrap(argumentsList);
+        if (typeof argumentsList[0] == 'string')
+            return wrap(document.querySelectorAll(argumentsList[0]))
+        if (argumentsList[0][Symbol.iterator])
+            return wrap(argumentsList[0]);
         return wrap(document.querySelectorAll(argumentsList[0]))
     }
 })

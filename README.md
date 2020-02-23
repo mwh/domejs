@@ -102,3 +102,12 @@ and have multiple ways of interacting:
     $('li').on.click(() => alert('clicked'))
     $('li').on.click = () => alert('clicked')
     $('li').off('click', handler)
+
+Node objects and collections of node objects can be wrapped by
+passing them to $ directly:
+
+    $(document.body)
+    $(document.body.childNodes)
+    $(node1, node2, node3)
+
+These can then be used in all the same ways as above.
