@@ -156,6 +156,9 @@ const baseMethods = {
                 ret.push(v.value)
         return wrap(ret)
     },
+    flat(iterable, path) {
+        return this.$f
+    },
     [Symbol.iterator]: function(iterable, path) {
         let obs = navigate(iterable, path)
         return obs[Symbol.iterator]()
@@ -170,6 +173,15 @@ const specialGetters = {
     off(iterable, path) {
         return OnProxy(iterable, path, true)
     },
+    $f(iterable, path) {
+        let its = navigate(iterable, path)
+        return wrap(flattened(its))
+    }
+}
+
+function* flattened(its) {
+    for (let it of its)
+        yield* it
 }
 
 function bindEvent(iterable, path, ev, handler, remove) {

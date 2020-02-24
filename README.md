@@ -88,12 +88,14 @@ items to use elsewhere, use `Array.from`.
 # Other methods
 
 A few additional methods augment those available on the
-nodes themselves. `forEach`, `map`, and `filter` have the usual
-collection behaviour:
+nodes themselves. `forEach`, `map`, `filter`, and `flat` have
+the usual collection behaviour over the collection of matched
+nodes or property values:
 
     $('li').forEach(x => alert(x.textContent))
     $('img').map(x => {url: x.src, width: x.width })
     $('input[type=number]').filter(x => x.value * 10 < 100)
+    $('.boxes').childNodes.flat().remove()
 
 `on` and `off` allow attaching event listeners to the elements,
 and have multiple ways of interacting:
