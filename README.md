@@ -104,6 +104,7 @@ and have multiple ways of interacting:
     $('li').on.click(() => alert('clicked'))
     $('li').on.click = () => alert('clicked')
     $('li').off('click', handler)
+    $('li').on = { click() { alert('clicked' }, mouseenter: highlight }
 
 Node objects and collections of node objects can be wrapped by
 passing them to $ directly:

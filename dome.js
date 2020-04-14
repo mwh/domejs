@@ -96,6 +96,8 @@ const proxyHandler = {
         }
     },
     set: function(obj, prop, value) {
+        if (prop in specialSetters)
+            return specialSetters[prop](obj, prop, value)
         for (let o of obj.iterable) {
             for (let p of obj.path)
                 o = o[p];
@@ -176,6 +178,15 @@ const specialGetters = {
     $f(iterable, path) {
         let its = navigate(iterable, path)
         return wrap(flattened(its))
+    }
+}
+
+// These are extra setter properties available on $('').
+const specialSetters = {
+    on(obj, prop, value) {
+        for (let p of Object.keys(value))
+            bindEvent(obj.iterable, obj.path, p, value[p], false);
+        return true;
     }
 }
 
