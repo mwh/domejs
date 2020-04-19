@@ -106,6 +106,16 @@ and have multiple ways of interacting:
     $('li').off('click', handler)
     $('li').on = { click() { alert('clicked' }, mouseenter: highlight }
 
+
+Every wrapper has itself a $ method, which initates a new
+query rooted at the items in the collection:
+
+    $('p').$('a').style // same as $('p a')
+    $('p').parentNode.$('img') // sibling imgs of ps
+
+This method supports querying only, and not new element
+construction with `new $('div')`.
+
 Node objects and collections of node objects can be wrapped by
 passing them to $ directly:
 

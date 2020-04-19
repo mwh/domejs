@@ -164,7 +164,11 @@ const baseMethods = {
     [Symbol.iterator]: function(iterable, path) {
         let obs = navigate(iterable, path)
         return obs[Symbol.iterator]()
+    },
+    $(iterable, path, arg) {
+        return this.querySelectorAll(arg).$f
     }
+
 }
 
 // These are extra getter properties available on $('').
