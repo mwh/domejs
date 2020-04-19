@@ -15,7 +15,7 @@
 const dome = new Proxy(function() {}, {
     construct(target, argumentsList, newTarget) {
         let expr = argumentsList[0]
-        let hashM = expr.match(/#([^.]+)/)
+        let hashM = expr.match(/#([^[.]+)/)
         let id
         if (hashM)
             id = hashM[1]
