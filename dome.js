@@ -208,10 +208,11 @@ function bindEvent(iterable, path, ev, handler, remove) {
             x => x.removeEventListener(ev, handler))
 }
 
-// Special proxy for .on/.off, supporting three uses:
+// Special proxy for .on/.off, supporting four uses:
 //   $('').on('click', () => {})
 //   $('').on.click(() => {})
 //   $('').on.click = () => {}
+//   $('').on({click: ()=>{}, wheel: ()=>()})
 // A special shorthand
 //   $('').on.click((ev) => {})(arg)
 // immediately applies the event handler as well.
@@ -220,9 +221,16 @@ function OnProxy(iterable, path, remove) {
     let p = new Proxy(function on() {}, {
         apply(target, thisArg, argumentsList) {
             if (argumentsList.length < 2) {
-                navigate(iterable, path).forEach(o => {
-                    funcs.forEach(f => f.apply(o, argumentsList))
-                })
+                if (funcs.length)
+                    navigate(iterable, path).forEach(o => {
+                        funcs.forEach(f => f.apply(o, argumentsList))
+                    })
+                else {
+                    let value = argumentsList[0]
+                    for (let a of Object.keys(value))
+                        bindEvent(iterable, path, a, value[a], false);
+                    return p
+                }
                 return;
             }
             funcs.push(argumentsList[1])
